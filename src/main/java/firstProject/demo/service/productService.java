@@ -41,7 +41,6 @@ public class productService {
                 .orElse(null);
     }
 
-
     public boolean delete(Long id) {
         if (!repository.existsById(id)) return false;
         repository.deleteById(id);
