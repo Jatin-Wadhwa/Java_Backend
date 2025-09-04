@@ -1,5 +1,7 @@
 package firstProject.demo.service;
 
+import firstProject.demo.DTO.productDto;
+import firstProject.demo.exception.ProductNotFoundException;
 import firstProject.demo.model.productModel;
 import firstProject.demo.repository.productRepo;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,23 @@ public class productService {
 
     public productService(productRepo repository) {
         this.repository = repository;
+    }
+
+    public productModel create(productDto dto) {
+        productModel product = new productModel();
+        product.setName(dto.getName());
+        product.setEmail(dto.getEmail());
+        return repository.save(product);
+    }
+
+    public productModel update(Long id, productDto dto) {
+        return repository.findById(id)
+                .map(existing -> {
+                    if (dto.getName() != null) existing.setName(dto.getName());
+                    if (dto.getEmail() != null) existing.setEmail(dto.getEmail());
+                    return repository.save(existing);
+                })
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     public List<productModel> findAll() {
